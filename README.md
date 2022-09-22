@@ -113,6 +113,4 @@ multiple dyplr operations, all on one line, concluding with
 flights %>% group_by(year, month, day) %>% summarise(avg_arr_delay = mean(arr_delay, na.rm=T), prop_cancelled = mean(is.na(arr_delay))) %>% ggplot(aes(x=prop_cancelled ,y=avg_arr_delay)) + geom_point()
 ```
 
-    ## `summarise()` has grouped output by 'year', 'month'. You can override using the `.groups` argument.
-
 ![](README_files/figure-gfm/unnamed-chunk-7-1.png)<!-- -->
