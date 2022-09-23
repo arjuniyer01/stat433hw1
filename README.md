@@ -10,20 +10,6 @@ library(ggplot2)
 
 ``` r
 library(dplyr)
-```
-
-    ## 
-    ## Attaching package: 'dplyr'
-
-    ## The following objects are masked from 'package:stats':
-    ## 
-    ##     filter, lag
-
-    ## The following objects are masked from 'package:base':
-    ## 
-    ##     intersect, setdiff, setequal, union
-
-``` r
 library(nycflights13)
 ```
 
@@ -32,13 +18,10 @@ library(nycflights13)
 How many flights have a missing dep_time?
 
 ``` r
-flights %>% filter(is.na(dep_time)) %>% summarise(num=n())
+(flights %>% filter(is.na(dep_time)) %>% summarise(num=n()))$num
 ```
 
-    ## # A tibble: 1 × 1
-    ##     num
-    ##   <int>
-    ## 1  8255
+    ## [1] 8255
 
 What other variables are missing?
 
@@ -47,6 +30,11 @@ colnames(flights)[colMeans(is.na(flights))>0]
 ```
 
     ## [1] "dep_time"  "dep_delay" "arr_time"  "arr_delay" "tailnum"   "air_time"
+
+What might these rows represent?
+
+One can see that the proportions of missing data in dep_time, dep_delay,
+arr_time, arr_delay, air_time are very close to each other:
 
 ``` r
 colMeans(is.na(flights))
@@ -61,39 +49,31 @@ colMeans(is.na(flights))
     ##       distance           hour         minute      time_hour 
     ##    0.000000000    0.000000000    0.000000000    0.000000000
 
-What might these rows represent?
+The more common phenomenon of NULL arrivals and departures can be
+attributed to cancelled flights.
 
 ``` r
-flights %>% filter(is.na(dep_time)) %>% head(., 5)
+flights %>% filter(is.na(dep_time)) %>% summarise(count=n())
 ```
 
-    ## # A tibble: 5 × 19
-    ##    year month   day dep_time sched_dep_time dep_delay arr_time sched_arr_time
-    ##   <int> <int> <int>    <int>          <int>     <dbl>    <int>          <int>
-    ## 1  2013     1     1       NA           1630        NA       NA           1815
-    ## 2  2013     1     1       NA           1935        NA       NA           2240
-    ## 3  2013     1     1       NA           1500        NA       NA           1825
-    ## 4  2013     1     1       NA            600        NA       NA            901
-    ## 5  2013     1     2       NA           1540        NA       NA           1747
-    ## # … with 11 more variables: arr_delay <dbl>, carrier <chr>, flight <int>,
-    ## #   tailnum <chr>, origin <chr>, dest <chr>, air_time <dbl>, distance <dbl>,
-    ## #   hour <dbl>, minute <dbl>, time_hour <dttm>
+    ## # A tibble: 1 × 1
+    ##   count
+    ##   <int>
+    ## 1  8255
+
+The less common phenomenon of NULL arrivals and NON-NULL departures can
+be attributed to possible first flights.
 
 ``` r
-flights %>% filter(!is.na(dep_time), is.na(arr_time)) %>% head(., 5)
+flights %>% filter(!is.na(dep_time), is.na(arr_time)) %>% summarise(count=n())
 ```
 
-    ## # A tibble: 5 × 19
-    ##    year month   day dep_time sched_dep_time dep_delay arr_time sched_arr_time
-    ##   <int> <int> <int>    <int>          <int>     <dbl>    <int>          <int>
-    ## 1  2013     1     1     2016           1930        46       NA           2220
-    ## 2  2013     1     2     2041           2045        -4       NA           2359
-    ## 3  2013     1     2     2145           2129        16       NA             33
-    ## 4  2013     1     9      615            615         0       NA            855
-    ## 5  2013     1     9     2042           2040         2       NA           2357
-    ## # … with 11 more variables: arr_delay <dbl>, carrier <chr>, flight <int>,
-    ## #   tailnum <chr>, origin <chr>, dest <chr>, air_time <dbl>, distance <dbl>,
-    ## #   hour <dbl>, minute <dbl>, time_hour <dttm>
+    ## # A tibble: 1 × 1
+    ##   count
+    ##   <int>
+    ## 1   458
+
+The rest can be categorized as erroneous data entries.
 
 # Question 2
 
@@ -101,6 +81,23 @@ Currently dep_time and sched_dep_time are convenient to look at, but
 hard to compute with because they’re not really continuous numbers.
 Convert them to a more convenient representation of number of minutes
 since midnight.
+
+``` r
+dep_time_in_mins = floor(flights$dep_time/100)*60 + ((flights$dep_time/100) - floor(flights$dep_time/100))*100
+sched_dep_time_in_mins = floor(flights$sched_dep_time/100)*60 + ((flights$sched_dep_time/100)-floor(flights$sched_dep_time/100))*100
+```
+
+``` r
+head(dep_time_in_mins, 5)
+```
+
+    ## [1] 317 333 342 344 354
+
+``` r
+head(sched_dep_time_in_mins, 5)
+```
+
+    ## [1] 315 329 340 345 360
 
 # Question 3
 
@@ -113,4 +110,4 @@ multiple dyplr operations, all on one line, concluding with
 flights %>% group_by(year, month, day) %>% summarise(avg_arr_delay = mean(arr_delay, na.rm=T), prop_cancelled = mean(is.na(arr_delay))) %>% ggplot(aes(x=prop_cancelled ,y=avg_arr_delay)) + geom_point()
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-7-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-9-1.png)<!-- -->
