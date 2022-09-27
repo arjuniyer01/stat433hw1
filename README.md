@@ -4,11 +4,6 @@ hw1
 
 ``` r
 library(ggplot2)
-```
-
-    ## Warning: package 'ggplot2' was built under R version 4.1.1
-
-``` r
 library(dplyr)
 library(nycflights13)
 ```
@@ -106,8 +101,11 @@ the proportion of canceled flights related to the average delay? Use
 multiple dyplr operations, all on one line, concluding with
 `ggplot(aes(x= ,y=)) + geom_point()`
 
+A positive correlation can be seen when Proportion cancelled are plotted
+against Average delays for both arrival and departure.
+
 ``` r
-flights %>% group_by(year, month, day) %>% summarise(avg_arr_delay = mean(arr_delay, na.rm=T), prop_cancelled = mean(is.na(arr_delay))) %>% ggplot(aes(x=prop_cancelled ,y=avg_arr_delay)) + geom_point()
+flights %>% group_by(year, month, day) %>% summarise(avg_arr_delay = mean(arr_delay, na.rm=T), prop_cancelled_arr = mean(is.na(arr_delay)), avg_dep_delay = mean(dep_delay, na.rm=T), prop_cancelled_dep = mean(is.na(dep_delay))) %>% ggplot() + geom_point(aes(x=prop_cancelled_arr ,y=avg_arr_delay), color='red', alpha=0.7) + geom_point(aes(x=prop_cancelled_dep ,y=avg_dep_delay), color='blue', alpha=0.7) + xlab('Proportion Cancelled') + ylab('Average Delay')
 ```
 
 ![](README_files/figure-gfm/unnamed-chunk-9-1.png)<!-- -->
