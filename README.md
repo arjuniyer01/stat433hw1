@@ -1,4 +1,4 @@
-hw1
+Homework 1
 ================
 2022-09-22
 
@@ -105,7 +105,7 @@ A positive correlation can be seen when Proportion cancelled are plotted
 against Average delays for both arrival and departure.
 
 ``` r
-flights %>% group_by(year, month, day) %>% summarise(avg_arr_delay = mean(arr_delay, na.rm=T), prop_cancelled_arr = mean(is.na(arr_delay)), avg_dep_delay = mean(dep_delay, na.rm=T), prop_cancelled_dep = mean(is.na(dep_delay))) %>% ggplot() + geom_point(aes(x=prop_cancelled_arr ,y=avg_arr_delay), color='red', alpha=0.7) + geom_point(aes(x=prop_cancelled_dep ,y=avg_dep_delay), color='blue', alpha=0.7) + xlab('Proportion Cancelled') + ylab('Average Delay')
+flights %>% group_by(year, month, day) %>% summarise(avg_arr_delay = mean(arr_delay, na.rm=T), prop_cancelled_arr = mean(is.na(arr_delay)), avg_dep_delay = mean(dep_delay, na.rm=T), prop_cancelled_dep = mean(is.na(dep_delay))) %>% ggplot() + geom_point(aes(x=prop_cancelled_arr ,y=avg_arr_delay), color='green', alpha=0.7) + geom_point(aes(x=prop_cancelled_dep ,y=avg_dep_delay), color='blue', alpha=0.7) + xlab('Proportion Cancelled') + ylab('Average Delay')
 ```
 
 ![](README_files/figure-gfm/unnamed-chunk-9-1.png)<!-- -->
