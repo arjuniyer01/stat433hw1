@@ -1,7 +1,7 @@
 Homework 1
 ================
 Arjun S. Iyer
-2022-09-22
+2022-09-29
 
 ``` r
 library(ggplot2)
@@ -49,7 +49,7 @@ The more common phenomenon of NULL arrivals and departures can be
 attributed to cancelled flights.
 
 ``` r
-flights %>% filter(is.na(dep_time)) %>% summarise(count=n())
+flights %>% filter(is.na(dep_time), is.na(arr_time)) %>% summarise(count=n())
 ```
 
     ## # A tibble: 1 × 1
